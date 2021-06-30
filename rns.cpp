@@ -338,22 +338,28 @@ double fastRand(unsigned long long &seed)
 void Update(float *vec_u, float *vec_v, float *vec_error, int label)
 {
     float x = 0, g, score;
+    float v_norm = 0;
     for (int c = 0; c != dim; c++) x += vec_u[c] * vec_v[c];
     score = FastSigmoid(x);
 
     g = (label - score) * rho;
     
+    bool norm_penalty = (rns == 1 || rns == 3) && !label;
+    if (norm_penalty)
+        for (int c = 0; c != dim; c++) v_norm += vec_v[c] * vec_v[c];
+    v_norm = sqrt(v_norm);
+
     if (vec_u == vec_v) {
         g = g * 2;
         for (int c = 0; c != dim; c++) vec_error[c] += g * vec_v[c];
 		// Robust NS
-		if ((rns == 1 || rns == 3) && !label)
-			for (int c = 0; c != dim; c++) vec_error[c] -= rho * vec_v[c] * lam / (num_negative + 1);
+		if (norm_penalty && v_norm > 0)
+			for (int c = 0; c != dim; c++) vec_error[c] -= rho * vec_v[c] * lam / (v_norm * (num_negative + 1));
     } else {
         for (int c = 0; c != dim; c++) vec_error[c] += g * vec_v[c];
 		// Robust NS
-		if ((rns == 1 || rns == 3) && !label) 
-			for (int c = 0; c != dim; c++) vec_v[c] -= rho * vec_v[c] * lam / (num_negative + 1);
+		if (norm_penalty && v_norm > 0) 
+			for (int c = 0; c != dim; c++) vec_v[c] -= rho * vec_v[c] * lam / (v_norm * (num_negative + 1));
         for (int c = 0; c != dim; c++) vec_v[c] += g * vec_u[c];
     }
 }
@@ -364,6 +370,7 @@ void *TrainLINEThread(void *id)
     long long count = 0, last_count = 0, curedge;
     unsigned long long seed = (long long)id;
     int d = 0;
+    float u_norm = 0;
 
     float *vec_error_u = (float *)calloc(dim, sizeof(float));
     if (vec_error_u == NULL) 
@@ -403,6 +410,7 @@ void *TrainLINEThread(void *id)
             } else {
                 target = neg_table[fastRandInt(seed)];
                 label = 0;
+                // adaptive negative sampler
                 while ((rns == 2 || rns == 3) 
                         && adj[(long long)u * num_memblock + target]) {
                     target = neg_table[fastRandInt(seed)];
@@ -414,7 +422,12 @@ void *TrainLINEThread(void *id)
             d++;
         }
         // Update emb_vertex[lu]
-		if (rns == 1 || rns == 3) for (int c = 0; c != dim; c++) vec_error_u[c] -= rho * lam * emb_vertex[c + lu];
+        if (rns == 1 || rns == 3){
+            u_norm = 0;
+            for (int c = 0; c != dim; c++) u_norm += emb_vertex[c + lu] * emb_vertex[c + lu];
+            u_norm = sqrt(u_norm);
+		    for (int c = 0; c != dim; c++) vec_error_u[c] -= rho * lam * emb_vertex[c + lu] / u_norm;
+        }
         for (int c = 0; c != dim; c++) emb_vertex[c + lu] += vec_error_u[c];
         count++;
 		//cout << emb_vertex[lu] << endl;
