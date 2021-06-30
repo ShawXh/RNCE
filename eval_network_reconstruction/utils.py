@@ -6,7 +6,7 @@ def read_emb(file_name):
         ln = f.readline()
         n, d = list(map(int, ln.strip().split(" ")))
         emb = np.zeros((n, d))
-        for ln in f.readlines()[1:]:
+        for ln in f.readlines():
             ln = ln.strip().split(" ")
             nd = int(ln[0])
             emb[nd] = np.array(list(map(float, ln[1:])))
