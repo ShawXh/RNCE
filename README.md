@@ -14,7 +14,7 @@ sh compile.sh
 ```
 
 # RNCE
-The implementation of paper ''Learning Regularized Noise ContrastiveEstimation for Robust Network Embedding''.
+The implementation of TKDE'22 paper [''Learning Regularized Noise ContrastiveEstimation for Robust Network Embedding''](https://shawxh.github.io/assets/gomune.pdf).
 
 ## Usage Example
 ```
@@ -51,4 +51,17 @@ cd eval_network_reconstruction
 and then,
 ```python
 python network_reconstruction.py --emb1 $emb_x_path --emb2 $emb_h(x)_path --net $network_path
+```
+
+# Citation
+```
+@ARTICLE{rnce,
+  author={Xiong, Hao and Yan, Junchi and Huang, Zengfeng},
+  journal={IEEE Transactions on Knowledge and Data Engineering}, 
+  title={Learning Regularized Noise Contrastive Estimation for Robust Network Embedding}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={1-1},
+  doi={10.1109/TKDE.2022.3148284}}
 ```
