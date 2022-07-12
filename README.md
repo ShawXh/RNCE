@@ -24,7 +24,7 @@ The implementation of TKDE'22 paper [''Learning Regularized Noise ContrastiveEst
 For full usage, please refer to the `main()` function in cpp code.
 
 # RNS
-We re-implement the paper AAAI19 paper ''Robust Negative Sampling for Negative Embedding'' (including the embedding penalty and the adaptive negative sampler).
+We re-implement the paper AAAI19 paper ''[Robust Negative Sampling for Negative Embedding](https://ojs.aaai.org/index.php/AAAI/article/view/4187/4065)'' (including the embedding penalty and the adaptive negative sampler).
 
 ## Usage example
 ```
