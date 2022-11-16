@@ -14,7 +14,7 @@ sh compile.sh
 ```
 
 # RNCE
-The implementation of TKDE'22 paper [''Learning Regularized Noise ContrastiveEstimation for Robust Network Embedding''](https://shawxh.github.io/assets/gomune.pdf).
+The implementation of TKDE'22 paper [''Learning Regularized Noise ContrastiveEstimation for Robust Network Embedding''](https://shawxh.github.io/assets/rnce.pdf).
 
 ## Usage Example
 ```
